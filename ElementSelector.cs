@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class ElementSelector : MonoBehaviour
 {
+    int count = 0;
+    Vector3 prevPos;
+    Vector3 goal = new Vector3(0, 15, 0);
+
+    //public GameObject Atom;
+
 
     private void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -16,18 +23,32 @@ public class ElementSelector : MonoBehaviour
             {
                 if (hit.transform != null)
                 {
-                    PrintName(hit.transform.gameObject);
-                   hit.transform.GetComponent<Transform>().Translate (-9.92f, 5f, -0.525f);
-
+                    if(hit.transform.gameObject.name == "Front Panel" && count == 0)
+                    {
+                        prevPos = hit.transform.position;
+                        hit.transform.GetComponent<Transform>().Translate(goal-prevPos);
+                        //hit.transform.GetComponent<Transform>().transform.position = Vector3.MoveTowards(transform.position, goal, Time.deltaTime * 1000);
+                        hit.transform.gameObject.transform.localScale = new Vector3(5, 70, 0.05f);
+                        count = 1;
+                    }
+                    else
+                    {
+                        if (hit.transform.gameObject.transform.position == goal && count == 1)
+                        {
+                            hit.transform.GetComponent<Transform>().Translate(prevPos - goal);
+                            hit.transform.gameObject.transform.localScale = new Vector3(1, 14, 0.05f);
+                            count = 0;
+                        }
+                    }
                 }
             }
         }
         
     }
-
-    private void PrintName(GameObject go)
+    /*
+    public void MoveAtom()
     {
-        print(go.name);
+        Atom.transform.Translate(0, 0, 0);
     }
-
+    */
 }
